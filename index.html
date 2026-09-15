@@ -1,740 +1,155 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>No Dial Tone Troubleshooting</title>
 
-  <meta
-    name="description"
-    content="Interactive no dial tone troubleshooting guide for field technicians"
-  >
-
-  <title>No Dial Tone Troubleshooting</title>
-
-  <style>
-    :root {
-      --navy: #12304a;
-      --blue: #1967a3;
-      --blue-light: #eaf4fb;
-      --green: #237a4b;
-      --green-light: #eaf7ef;
-      --red: #a53b31;
-      --amber: #8a5a00;
-      --amber-light: #fff7df;
-      --gray-200: #dce3e8;
-      --gray-600: #52616b;
-      --white: #ffffff;
-      --shadow: 0 12px 35px rgba(18, 48, 74, 0.13);
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: "Segoe UI", Arial, sans-serif;
-      color: var(--navy);
-      background: linear-gradient(
-        145deg,
-        #edf4f8 0%,
-        #f8fafb 52%,
-        #e9f1f5 100%
-      );
-    }
-
-    header {
-      padding: 22px 18px;
-      color: var(--white);
-      background: var(--navy);
-      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.14);
-    }
-
-    .header-inner,
-    main {
-      max-width: 820px;
-      margin: 0 auto;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(1.55rem, 4vw, 2.2rem);
-    }
-
-    .subtitle {
-      margin: 6px 0 0;
-      color: #cee2ee;
-    }
-
-    main {
-      padding: 26px 16px 42px;
-    }
-
-    .progress-wrap {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    .progress-track {
-      flex: 1;
-      height: 9px;
-      overflow: hidden;
-      border-radius: 99px;
-      background: var(--gray-200);
-    }
-
-    .progress-bar {
-      width: 0;
-      height: 100%;
-      border-radius: inherit;
-      background: linear-gradient(
-        90deg,
-        var(--blue),
-        #39a6b8
-      );
-      transition: width 0.3s ease;
-    }
-
-    #stepCount {
-      min-width: 82px;
-      color: var(--gray-600);
-      font-size: 0.9rem;
-      text-align: right;
-    }
-
-    .trail {
-      min-height: 22px;
-      margin-bottom: 12px;
-      color: var(--gray-600);
-      font-size: 0.92rem;
-      line-height: 1.4;
-    }
-
-    .card {
-      padding: clamp(24px, 5vw, 42px);
-      border: 1px solid rgba(18, 48, 74, 0.08);
-      border-radius: 18px;
-      background: var(--white);
-      box-shadow: var(--shadow);
-      text-align: center;
-    }
-
-    .eyebrow {
-      display: inline-block;
-      margin-bottom: 14px;
-      padding: 6px 11px;
-      border-radius: 99px;
-      color: var(--blue);
-      background: var(--blue-light);
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    h2 {
-      margin: 0 0 12px;
-      font-size: clamp(1.45rem, 4vw, 2rem);
-      line-height: 1.25;
-    }
-
-    .detail {
-      max-width: 620px;
-      margin: 0 auto 25px;
-      color: var(--gray-600);
-      line-height: 1.55;
-    }
-
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 12px;
-    }
-
-    button {
-      min-width: 145px;
-      padding: 13px 20px;
-      border: 0;
-      border-radius: 10px;
-      font: inherit;
-      font-weight: 700;
-      cursor: pointer;
-      transition:
-        transform 0.12s ease,
-        filter 0.12s ease,
-        box-shadow 0.12s ease;
-    }
-
-    button:hover {
-      transform: translateY(-2px);
-      filter: brightness(0.98);
-      box-shadow: 0 7px 18px rgba(18, 48, 74, 0.15);
-    }
-
-    button:focus-visible {
-      outline: 3px solid #77b8de;
-      outline-offset: 3px;
-    }
-
-    .primary {
-      color: var(--white);
-      background: var(--blue);
-    }
-
-    .yes {
-      color: var(--white);
-      background: var(--green);
-    }
-
-    .no {
-      color: var(--white);
-      background: var(--red);
-    }
-
-    .secondary {
-      color: var(--navy);
-      background: #e8edf1;
-    }
-
-    .result {
-      border-top: 7px solid var(--green);
-    }
-
-    .result.support {
-      border-top-color: var(--amber);
-    }
-
-    .result .eyebrow {
-      color: var(--green);
-      background: var(--green-light);
-    }
-
-    .result.support .eyebrow {
-      color: var(--amber);
-      background: var(--amber-light);
-    }
-
-    .result-list {
-      display: inline-block;
-      max-width: 620px;
-      margin: 0 auto 24px;
-      padding-left: 22px;
-      color: var(--gray-600);
-      line-height: 1.65;
-      text-align: left;
-    }
-
-    .footer-actions {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      margin-top: 17px;
-    }
-
-    .footer-actions button {
-      min-width: 110px;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .note {
-      margin-top: 22px;
-      padding: 14px 16px;
-      border-left: 4px solid var(--blue);
-      border-radius: 8px;
-      color: var(--gray-600);
-      background: rgba(255, 255, 255, 0.74);
-      font-size: 0.9rem;
-      line-height: 1.45;
-    }
-
-    @media (max-width: 520px) {
-      .actions {
-        flex-direction: column;
-      }
-
-      button {
-        width: 100%;
-      }
-
-      .footer-actions {
-        flex-direction: column-reverse;
-      }
-    }
-  </style>
+<style>
+body{
+  font-family:Arial,sans-serif;
+  background:#f4f6f8;
+  max-width:800px;
+  margin:auto;
+  padding:20px;
+}
+.card{
+  background:#fff;
+  padding:25px;
+  border-radius:10px;
+  box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+h1,h2{text-align:center}
+.buttons{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:center;
+  margin-top:20px;
+}
+button{
+  padding:12px 20px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:16px;
+}
+.yes{background:#28a745;color:white}
+.no{background:#dc3545;color:white}
+.primary{background:#0078d4;color:white}
+.secondary{background:#ccc}
+#path{
+  margin-bottom:15px;
+  color:#666;
+  font-size:.9em;
+}
+</style>
 </head>
 
 <body>
-  <header>
-    <div class="header-inner">
-      <h1>No Dial Tone Troubleshooting</h1>
 
-      <p class="subtitle">
-        Follow each step and select the observed result.
-      </p>
-    </div>
-  </header>
+<h1>No Dial Tone Troubleshooting</h1>
 
-  <main>
-    <div
-      class="progress-wrap"
-      aria-label="Troubleshooting progress"
-    >
-      <div class="progress-track">
-        <div
-          class="progress-bar"
-          id="progressBar"
-        ></div>
-      </div>
+<div id="path"></div>
 
-      <span id="stepCount">Start</span>
-    </div>
+<div class="card" id="app"></div>
 
-    <div
-      class="trail"
-      id="trail"
-      aria-live="polite"
-    ></div>
+<div style="margin-top:15px;text-align:center;">
+  <button class="secondary" onclick="back()">Back</button>
+  <button class="secondary" onclick="resetFlow()">Start Over</button>
+</div>
 
-    <section
-      class="card"
-      id="card"
-      aria-live="polite"
-    ></section>
+<script>
 
-    <div class="footer-actions">
-      <button
-        class="secondary hidden"
-        id="backBtn"
-        type="button"
-      >
-        ← Back
-      </button>
+const steps = {
 
-      <button
-        class="secondary"
-        id="resetBtn"
-        type="button"
-      >
-        ↻ Start Over
-      </button>
-    </div>
+start:{
+title:"No Dial Tone",
+detail:"Plug a known-good phone directly into the ONT.",
+actions:[
+{text:"Continue",next:"dialTone",class:"primary"}
+]
+},
 
-    <div class="note">
-      <strong>Tech note:</strong>
-      Follow current support procedures when checking Meta registration,
-      provisioning, WTN Management, PIC, Long Distance service, port
-      status, or internal wiring.
-    </div>
-  </main>
+dialTone:{
+title:"Did you get dial tone?",
+actions:[
+{text:"Yes",next:"readback311",class:"yes"},
+{text:"No",next:"isPort",class:"no"}
+]
+},
 
-  <script>
-    const steps = {
-      start: {
-        type: "intro",
-        label: "Start",
-        title: "No Dial Tone",
-        detail:
-          "Begin by plugging a known-working phone directly into the ONT.",
-        actions: [
-          {
-            text: "Continue",
-            next: "dialTone",
-            className: "primary"
-          }
-        ]
-      },
+/* NO DIAL TONE BRANCH */
 
-      dialTone: {
-        type: "question",
-        label: "Dial Tone",
-        title: "Did you get dial tone?",
-        detail:
-          "Select the result of the direct ONT test.",
-        actions: [
-          {
-            text: "Yes",
-            next: "call311",
-            className: "yes",
-            answer: "Dial tone: Yes"
-          },
-          {
-            text: "No",
-            next: "isPort",
-            className: "no",
-            answer: "Dial tone: No"
-          }
-        ]
-      },
+isPort:{
+title:"Is it a port?",
+detail:"Have you called the CSR staff to port the number?",
+actions:[
+{text:"Yes",next:"checkProvisioning",class:"yes"},
+{text:"No",next:"callCSR",class:"no"}
+]
+},
 
-      isPort: {
-        type: "question",
-        label: "Port Check",
-        title: "Is it a port?",
-        detail:
-          "Have you called the CSR staff to port the number?",
-        actions: [
-          {
-            text: "Yes",
-            next: "checkProvisioning",
-            className: "yes",
-            answer: "CSR contacted to port number: Yes"
-          },
-          {
-            text: "No",
-            next: "callCSR",
-            className: "no",
-            answer: "CSR contacted to port number: No"
-          }
-        ]
-      },
+checkProvisioning:{
+title:"Support Action",
+result:true,
+detail:"Call Support to check provisioning."
+},
 
-      checkProvisioning: {
-        type: "result support",
-        label: "Support Action",
-        title: "Check Provisioning",
-        bullets: [
-          "Call into Support to check provisioning."
-        ],
-        actions: [
-          {
-            text: "Start Over",
-            next: "start",
-            className: "primary"
-          }
-        ]
-      },
+callCSR:{
+title:"CSR Action",
+result:true,
+detail:"Call CSR staff to port the number."
+},
 
-      callCSR: {
-        type: "result support",
-        label: "CSR Action",
-        title: "Port the Number",
-        bullets: [
-          "Call CSR staff to port the number."
-        ],
-        actions: [
-          {
-            text: "Start Over",
-            next: "start",
-            className: "primary"
-          }
-        ]
-      },
+/* DIAL TONE BRANCH */
 
-      call311: {
-        type: "question",
-        label: "311 Test",
-        title: "Call 311. Does it read back to you?",
-        detail:
-          "Listen for the number readback.",
-        actions: [
-          {
-            text: "Yes",
-            next: "callOfficeInstruction",
-            className: "yes",
-            answer: "311 readback: Yes"
-          },
-          {
-            text: "No",
-            next: "metaRegistration",
-            className: "no",
-            answer: "311 readback: No"
-          }
-        ]
-      },
+readback311:{
+title:"Call 311. Does it read back to you?",
+actions:[
+{text:"Yes",next:"callOffice",class:"yes"},
+{text:"No",next:"metaRegistration",class:"no"}
+]
+},
 
-      callOfficeInstruction: {
-        type: "instruction",
-        label: "Outbound Test",
-        title: "Call the office",
-        detail:
-          "Place an outbound test call to the office.",
-        actions: [
-          {
-            text: "Continue",
-            next: "callOffice",
-            className: "primary"
-          }
-        ]
-      },
+callOffice:{
+title:"Can you call the office?",
+actions:[
+{text:"Yes",next:"callCell",class:"yes"},
+{text:"No",next:"metaRegistration",class:"no"}
+]
+},
 
-      callOffice: {
-        type: "question",
-        label: "Outbound Test",
-        title: "Can you call the office?",
-        detail:
-          "Select the result of the outbound test call.",
-        actions: [
-          {
-            text: "Yes",
-            next: "cellCall",
-            className: "yes",
-            answer: "Call office: Yes"
-          },
-          {
-            text: "No",
-            next: "metaRegistration",
-            className: "no",
-            answer: "Call office: No"
-          }
-        ]
-      },
+callCell:{
+title:"Call your cell phone from the test phone.",
+detail:"This verifies outbound calling and long distance routing.",
+actions:[
+{text:"Continue",next:"cellRang",class:"primary"}
+]
+},
 
-      cellCall: {
-        type: "question",
-        label: "Inbound Test",
-        title: "Can your cell call the phone?",
-        detail:
-          "Use your cell phone to place an inbound call to the number.",
-        actions: [
-          {
-            text: "Yes",
-            next: "internalWiring",
-            className: "yes",
-            answer: "Cell can call phone: Yes"
-          },
-          {
-            text: "No",
-            next: "picCheck",
-            className: "no",
-            answer: "Cell can call phone: No"
-          }
-        ]
-      },
+cellRang:{
+title:"Did your cell phone ring?",
+actions:[
+{text:"Yes",next:"callBack",class:"yes"},
+{text:"No",next:"picCheck",class:"no"}
+]
+},
 
-      internalWiring: {
-        type: "result",
-        label: "Next Action",
-        title: "Verify Service and Check Internal Wiring",
-        bullets: [
-          "Place a return call from your cell to the number to verify that works.",
-          "Check internal wiring and connections for issues."
-        ],
-        actions: [
-          {
-            text: "Start Over",
-            next: "start",
-            className: "primary"
-          }
-        ]
-      },
+callBack:{
+title:"Call the phone number back from your cell.",
+detail:"Verify inbound calling.",
+actions:[
+{text:"Continue",next:"phoneRang",class:"primary"}
+]
+},
 
-      picCheck: {
-        type: "result support",
-        label: "Support Action",
-        title: "Check WTN Management",
-        bullets: [
-          "Call Support.",
-          "Have Support check WTN Management for PIC and Long Distance service."
-        ],
-        actions: [
-          {
-            text: "Start Over",
-            next: "start",
-            className: "primary"
-          }
-        ]
-      },
+phoneRang:{
+title:"Did the phone ring?",
+actions:[
+{text:"Yes",next:"internalWiring",class:"yes"},
+{text:"No",next:"picCheck",class:"no"}
+]
+},
 
-      metaRegistration: {
-        type: "result support",
-        label: "Support Action",
-        title: "Check Meta Registration and Port Status",
-        bullets: [
-          "Call Support.",
-          "Check Meta for registration.",
-          "Determine whether this was a ported number.",
-          "Verify whether the port has been completed.",
-          "If the port has not been completed, contact the CSR team to complete it."
-        ],
-        actions: [
-          {
-            text: "Start Over",
-            next: "start",
-            className: "primary"
-          }
-        ]
-      }
-    };
-
-    let current = "start";
-    let history = [];
-    let answers = [];
-
-    const card =
-      document.getElementById("card");
-
-    const backBtn =
-      document.getElementById("backBtn");
-
-    const resetBtn =
-      document.getElementById("resetBtn");
-
-    const progressBar =
-      document.getElementById("progressBar");
-
-    const stepCount =
-      document.getElementById("stepCount");
-
-    const trail =
-      document.getElementById("trail");
-
-    function render() {
-      const step = steps[current];
-
-      card.className =
-        step.type.startsWith("result")
-          ? "card " + step.type
-          : "card";
-
-      const detail = step.detail
-        ? `<p class="detail">${step.detail}</p>`
-        : "";
-
-      const bullets = step.bullets
-        ? `
-          <ul class="result-list">
-            ${step.bullets
-              .map(item => `<li>${item}</li>`)
-              .join("")}
-          </ul>
-        `
-        : "";
-
-      const actions = step.actions
-        .map(
-          (action, index) => `
-            <button
-              type="button"
-              class="${action.className}"
-              data-action="${index}"
-            >
-              ${action.text}
-            </button>
-          `
-        )
-        .join("");
-
-      card.innerHTML = `
-        <span class="eyebrow">${step.label}</span>
-
-        <h2>${step.title}</h2>
-
-        ${detail}
-
-        ${bullets}
-
-        <div class="actions">
-          ${actions}
-        </div>
-      `;
-
-      card
-        .querySelectorAll("[data-action]")
-        .forEach(button => {
-          button.addEventListener("click", () => {
-            const actionIndex =
-              Number(button.dataset.action);
-
-            choose(step.actions[actionIndex]);
-          });
-        });
-
-      backBtn.classList.toggle(
-        "hidden",
-        history.length === 0
-      );
-
-      const completed =
-        Math.min(history.length, 6);
-
-      const progress =
-        current === "start"
-          ? 0
-          : Math.max(
-              12,
-              Math.round((completed / 6) * 100)
-            );
-
-      progressBar.style.width =
-        `${progress}%`;
-
-      if (step.type.startsWith("result")) {
-        stepCount.textContent = "Complete";
-      } else if (current === "start") {
-        stepCount.textContent = "Start";
-      } else {
-        stepCount.textContent =
-          `Step ${Math.min(history.length + 1, 6)} of 6`;
-      }
-
-      trail.textContent =
-        answers.length > 0
-          ? answers.join("  ›  ")
-          : "Ready to begin";
-
-      document.title =
-        `${step.title} | No Dial Tone Troubleshooting`;
-    }
-
-    function choose(action) {
-      if (action.next === "start") {
-        reset();
-        return;
-      }
-
-      history.push({
-        current: current,
-        answers: [...answers]
-      });
-
-      if (action.answer) {
-        answers.push(action.answer);
-      }
-
-      current = action.next;
-
-      render();
-    }
-
-    function back() {
-      const previous = history.pop();
-
-      if (!previous) {
-        return;
-      }
-
-      current = previous.current;
-      answers = previous.answers;
-
-      render();
-    }
-
-    function reset() {
-      current = "start";
-      history = [];
-      answers = [];
-
-      render();
-    }
-
-    backBtn.addEventListener(
-      "click",
-      back
-    );
-
-    resetBtn.addEventListener(
-      "click",
-      reset
-    );
-
-    render();
-  </script>
-</body>
-</html>
+internalWiring
