@@ -1,47 +1,74 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>No Dial Tone Troubleshooting</title>
+<title>No Dial Tone Troubleshooting v2</title>
 
 <style>
 body{
-  font-family:Arial,sans-serif;
-  background:#f4f6f8;
-  max-width:800px;
-  margin:auto;
-  padding:20px;
+    font-family:Arial,sans-serif;
+    background:#f4f6f8;
+    max-width:800px;
+    margin:auto;
+    padding:20px;
 }
+
+h1{
+    text-align:center;
+}
+
 .card{
-  background:#fff;
-  padding:25px;
-  border-radius:10px;
-  box-shadow:0 2px 8px rgba(0,0,0,.1);
+    background:white;
+    padding:25px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
 }
-h1,h2{text-align:center}
+
 .buttons{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  justify-content:center;
-  margin-top:20px;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin-top:20px;
 }
+
 button{
-  padding:12px 20px;
-  border:none;
-  border-radius:6px;
-  cursor:pointer;
-  font-size:16px;
+    padding:12px 20px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:16px;
 }
-.yes{background:#28a745;color:white}
-.no{background:#dc3545;color:white}
-.primary{background:#0078d4;color:white}
-.secondary{background:#ccc}
+
+.primary{
+    background:#0078d4;
+    color:white;
+}
+
+.yes{
+    background:#28a745;
+    color:white;
+}
+
+.no{
+    background:#dc3545;
+    color:white;
+}
+
+.secondary{
+    background:#cccccc;
+}
+
 #path{
-  margin-bottom:15px;
-  color:#666;
-  font-size:.9em;
+    margin-bottom:15px;
+    color:#666;
+    font-size:.9em;
+}
+
+.footer{
+    margin-top:15px;
+    text-align:center;
 }
 </style>
 </head>
@@ -54,9 +81,9 @@ button{
 
 <div class="card" id="app"></div>
 
-<div style="margin-top:15px;text-align:center;">
-  <button class="secondary" onclick="back()">Back</button>
-  <button class="secondary" onclick="resetFlow()">Start Over</button>
+<div class="footer">
+    <button class="secondary" onclick="back()">Back</button>
+    <button class="secondary" onclick="resetFlow()">Start Over</button>
 </div>
 
 <script>
@@ -64,92 +91,38 @@ button{
 const steps = {
 
 start:{
-title:"No Dial Tone",
-detail:"Plug a known-good phone directly into the ONT.",
-actions:[
-{text:"Continue",next:"dialTone",class:"primary"}
-]
+    title:"No Dial Tone",
+    detail:"Plug a known-good phone directly into the ONT.",
+    actions:[
+        {text:"Continue",next:"dialTone",class:"primary"}
+    ]
 },
 
 dialTone:{
-title:"Did you get dial tone?",
-actions:[
-{text:"Yes",next:"readback311",class:"yes"},
-{text:"No",next:"isPort",class:"no"}
-]
+    title:"Did you get dial tone?",
+    actions:[
+        {text:"Yes",next:"readback311",class:"yes"},
+        {text:"No",next:"isPort",class:"no"}
+    ]
 },
 
 /* NO DIAL TONE BRANCH */
 
 isPort:{
-title:"Is it a port?",
-detail:"Have you called the CSR staff to port the number?",
-actions:[
-{text:"Yes",next:"checkProvisioning",class:"yes"},
-{text:"No",next:"callCSR",class:"no"}
-]
+    title:"Is it a port?",
+    detail:"Have you called the CSR staff to port the number?",
+    actions:[
+        {text:"Yes",next:"checkProvisioning",class:"yes"},
+        {text:"No",next:"callCSR",class:"no"}
+    ]
 },
 
 checkProvisioning:{
-title:"Support Action",
-result:true,
-detail:"Call Support to check provisioning."
+    title:"Support Action",
+    result:true,
+    detail:"Call Support to check provisioning."
 },
 
 callCSR:{
-title:"CSR Action",
-result:true,
-detail:"Call CSR staff to port the number."
-},
-
-/* DIAL TONE BRANCH */
-
-readback311:{
-title:"Call 311. Does it read back to you?",
-actions:[
-{text:"Yes",next:"callOffice",class:"yes"},
-{text:"No",next:"metaRegistration",class:"no"}
-]
-},
-
-callOffice:{
-title:"Can you call the office?",
-actions:[
-{text:"Yes",next:"callCell",class:"yes"},
-{text:"No",next:"metaRegistration",class:"no"}
-]
-},
-
-callCell:{
-title:"Call your cell phone from the test phone.",
-detail:"This verifies outbound calling and long distance routing.",
-actions:[
-{text:"Continue",next:"cellRang",class:"primary"}
-]
-},
-
-cellRang:{
-title:"Did your cell phone ring?",
-actions:[
-{text:"Yes",next:"callBack",class:"yes"},
-{text:"No",next:"picCheck",class:"no"}
-]
-},
-
-callBack:{
-title:"Call the phone number back from your cell.",
-detail:"Verify inbound calling.",
-actions:[
-{text:"Continue",next:"phoneRang",class:"primary"}
-]
-},
-
-phoneRang:{
-title:"Did the phone ring?",
-actions:[
-{text:"Yes",next:"internalWiring",class:"yes"},
-{text:"No",next:"picCheck",class:"no"}
-]
-},
-
-internalWiring
+    title:"CSR Action",
+    result:true
