@@ -125,4 +125,157 @@ checkProvisioning:{
 
 callCSR:{
     title:"CSR Action",
-    result:true
+    result:true,
+    detail:"Call CSR staff to port the number."
+},
+
+/* DIAL TONE BRANCH */
+
+readback311:{
+    title:"Call 311. Does it read back to you?",
+    actions:[
+        {text:"Yes",next:"callOffice",class:"yes"},
+        {text:"No",next:"metaRegistration",class:"no"}
+    ]
+},
+
+callOffice:{
+    title:"Can you call the office?",
+    actions:[
+        {text:"Yes",next:"callCell",class:"yes"},
+        {text:"No",next:"metaRegistration",class:"no"}
+    ]
+},
+
+callCell:{
+    title:"Call your cell phone from the test phone",
+    detail:"This verifies outbound calling and long distance routing.",
+    actions:[
+        {text:"Continue",next:"cellRang",class:"primary"}
+    ]
+},
+
+cellRang:{
+    title:"Did your cell phone ring?",
+    actions:[
+        {text:"Yes",next:"callBack",class:"yes"},
+        {text:"No",next:"picCheck",class:"no"}
+    ]
+},
+
+callBack:{
+    title:"Call the phone number back from your cell",
+    detail:"Verify inbound calling.",
+    actions:[
+        {text:"Continue",next:"phoneRang",class:"primary"}
+    ]
+},
+
+phoneRang:{
+    title:"Did the phone ring?",
+    actions:[
+        {text:"Yes",next:"internalWiring",class:"yes"},
+        {text:"No",next:"picCheck",class:"no"}
+    ]
+},
+
+internalWiring:{
+    title:"Voice Service Verified",
+    result:true,
+    detail:"Outbound and inbound calling work. Check internal wiring and connections."
+},
+
+picCheck:{
+    title:"Support Action",
+    result:true,
+    detail:"Call Support. Check WTN Management for PIC and Long Distance service."
+},
+
+metaRegistration:{
+    title:"Support Action",
+    result:true,
+    detail:"Call Support. Check Meta registration. Verify port completion. If the port has not completed, contact CSR."
+}
+
+};
+
+let current="start";
+let history=[];
+let trail=[];
+
+function render(){
+
+    const step=steps[current];
+
+    document.getElementById("path").innerHTML =
+        trail.length
+        ? "<strong>Path:</strong> " + trail.join(" ➜ ")
+        : "";
+
+    let html=`<h2>${step.title}</h2>`;
+
+    if(step.detail){
+        html+=`<p>${step.detail}</p>`;
+    }
+
+    if(step.result){
+
+        html+=`
+        <div class="buttons">
+            <button class="primary" onclick="resetFlow()">
+                Start Over
+            </button>
+        </div>
+        `;
+
+    }else{
+
+        html+=`<div class="buttons">`;
+
+        step.actions.forEach(action=>{
+            html+=`
+            <button
+                class="${action.class}"
+                onclick="go('${action.next}','${action.text}')">
+                ${action.text}
+            </button>
+            `;
+        });
+
+        html+=`</div>`;
+    }
+
+    document.getElementById("app").innerHTML=html;
+}
+
+function go(next,label){
+    history.push(current);
+    trail.push(label);
+    current=next;
+    render();
+}
+
+function back(){
+
+    if(history.length===0){
+        return;
+    }
+
+    current=history.pop();
+    trail.pop();
+    render();
+}
+
+function resetFlow(){
+    current="start";
+    history=[];
+    trail=[];
+    render();
+}
+
+render();
+
+</script>
+
+</body>
+</html>
